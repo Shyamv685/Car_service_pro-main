@@ -381,7 +381,7 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 overflow-hidden relative">
+    <div className="flex flex-col min-h-screen bg-gray-100 relative">
       {/* Dynamic Toast Notification */}
       <ToastNotification />
 
@@ -575,7 +575,7 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
              </div>
           </header>
 
-          <div className="flex-1 overflow-auto p-6 scroll-smooth relative">
+          <div className="flex-1 overflow-auto p-6 pb-20 scroll-smooth relative">
              {children}
           </div>
 
