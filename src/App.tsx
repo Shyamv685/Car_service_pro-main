@@ -53,17 +53,17 @@ const LogoutModal = ({ isOpen, onConfirm, onCancel }: { isOpen: boolean; onConfi
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up flex flex-col max-h-[90vh]">
-        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 flex-shrink-0">
-          <h3 className="font-bold text-lg text-gray-900">Confirm Logout</h3>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden animate-fade-in-up">
+        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+          <h3 className="font-bold text-lg text-gray-900 text-center">Confirm Logout</h3>
         </div>
-        <div className="p-6">
-          <p className="text-gray-600">Are you sure you want to logout?</p>
-          <div className="flex space-x-3 pt-4 border-t border-gray-100 mt-2">
-            <button onClick={onCancel} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium">
+        <div className="p-4">
+          <p className="text-gray-600 text-center mb-4">Are you sure you want to logout?</p>
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+            <button onClick={onCancel} className="w-full sm:w-auto px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium">
               Cancel
             </button>
-            <button onClick={onConfirm} className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 shadow-md transition-all text-sm font-medium flex items-center">
+            <button onClick={onConfirm} className="w-full sm:w-auto px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 shadow-md transition-all text-sm font-medium flex items-center justify-center">
               Sure
             </button>
           </div>
