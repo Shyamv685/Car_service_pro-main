@@ -1,0 +1,7 @@
+{
+  "name": "Car Service Pro",
+  "description": "A comprehensive platform for car rentals, service booking, and fleet management.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
