@@ -224,7 +224,7 @@ export default function CarRental() {
                       <label className="block text-sm font-medium text-gray-500 mb-2">Start Date</label>
                       <DatePicker
                         selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        onChange={(date: Date | null) => setStartDate(date)}
                         dateFormat="yyyy-MM-dd"
                         minDate={new Date()}
                         className="w-full border border-gray-200 rounded-lg py-2 px-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"

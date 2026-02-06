@@ -38,6 +38,8 @@ interface AppContextType {
   isEditProfileOpen: boolean;
   openEditProfile: () => void;
   closeEditProfile: () => void;
+  darkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -309,7 +311,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       localStorage.removeItem('mockUser');
       localStorage.removeItem('mockRole');
     }
-    
+
     setIsAuthenticated(false);
     setRoleState(UserRole.USER);
     setCurrentUser(DEFAULT_USER);
