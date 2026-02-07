@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Booking, BookingStatus, ServiceStatus } from '../types';
 import { SERVICE_TYPES } from '../constants';
-import { Star } from 'lucide-react';
+import { Star, Clock, CheckCircle, Wrench, Droplet, Sparkles, Hammer, Info, X } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -13,6 +13,29 @@ export default function ServiceBooking() {
   const [selectedCarId, setSelectedCarId] = useState<string>('');
   const [serviceDate, setServiceDate] = useState<Date | null>(null);
   const [activeTab, setActiveTab] = useState<'All' | 'Pending' | 'In progress' | 'Completed'>('All');
+  const [showServiceDetails, setShowServiceDetails] = useState<boolean>(false);
+  const [selectedServiceForDetails, setSelectedServiceForDetails] = useState<any>(null);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+
+  const getServiceIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'wrench': return <Wrench size={20} />;
+      case 'droplet': return <Droplet size={20} />;
+      case 'sparkles': return <Sparkles size={20} />;
+      case 'hammer': return <Hammer size={20} />;
+      default: return <Wrench size={20} />;
+    }
+  };
+
+  const openServiceDetails = (service: any) => {
+    setSelectedServiceForDetails(service);
+    setShowServiceDetails(true);
+  };
+
+  const closeServiceDetails = () => {
+    setShowServiceDetails(false);
+    setSelectedServiceForDetails(null);
+  };
 
   useEffect(() => {
     if (cars.length > 0 && !selectedCarId) {
@@ -80,6 +103,15 @@ export default function ServiceBooking() {
     addNotification("Service Request Sent! We will contact you shortly.");
   };
 
+  const handleCallAssistance = () => {
+    // Support phone number - in a real app, this would come from config
+    const supportNumber = '+1-800-CAR-HELP'; // Example: 1-800-227-4357
+    // Initiate phone call
+    window.location.href = `tel:${supportNumber}`;
+    // Add notification for user feedback
+    addNotification("Connecting to support... Please wait.");
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
         case ServiceStatus.COMPLETED: return 'bg-emerald-100 text-emerald-800';
@@ -95,6 +127,61 @@ export default function ServiceBooking() {
         <h1 className="text-2xl font-bold text-gray-900">Car Service</h1>
         <p className="text-gray-500 mt-1">Choose a service type, submit a booking, and track its status.</p>
       </div>
+
+      {/* Service Details Modal */}
+      {showServiceDetails && selectedServiceForDetails && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up">
+            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                  {getServiceIcon(selectedServiceForDetails.icon)}
+                </div>
+                <h3 className="font-bold text-lg text-gray-900">{selectedServiceForDetails.name}</h3>
+              </div>
+              <button onClick={closeServiceDetails} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-gray-600">{selectedServiceForDetails.description}</p>
+
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <Clock size={16} />
+                <span>Duration: {selectedServiceForDetails.duration}</span>
+              </div>
+
+              <div className="flex items-center space-x-2 text-lg font-bold text-green-600">
+                <span>₹{selectedServiceForDetails.basePrice}</span>
+              </div>
+
+              {selectedServiceForDetails.includes && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">What's included:</h4>
+                  <ul className="space-y-1">
+                    {selectedServiceForDetails.includes.map((item: string, idx: number) => (
+                      <li key={idx} className="flex items-center space-x-2 text-sm text-gray-600">
+                        <CheckCircle size={14} className="text-green-500 flex-shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <button
+                onClick={() => {
+                  setSelectedServiceId(selectedServiceForDetails.id);
+                  closeServiceDetails();
+                }}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors"
+              >
+                Select This Service
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Service Booking Form */}
@@ -147,16 +234,43 @@ export default function ServiceBooking() {
               />
            </div>
 
-           <div className="flex space-x-4">
-              <button 
-                onClick={handleBooking}
-                className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors"
-              >
-                Submit booking
-              </button>
-              <button className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors">
-                Notify via Email/SMS
-              </button>
+           <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                 <input
+                   type="checkbox"
+                   id="emailNotify"
+                   className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2"
+                 />
+                 <label htmlFor="emailNotify" className="text-sm text-gray-600">
+                   Send email notifications for status updates
+                 </label>
+              </div>
+              <div className="flex items-center space-x-3">
+                 <input
+                   type="checkbox"
+                   id="smsNotify"
+                   defaultChecked
+                   className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2"
+                 />
+                 <label htmlFor="smsNotify" className="text-sm text-gray-600">
+                   Send SMS notifications for status updates
+                 </label>
+              </div>
+
+              <div className="flex space-x-4">
+                 <button
+                   onClick={handleBooking}
+                   className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors"
+                 >
+                   Submit booking
+                 </button>
+                 <button
+                   onClick={handleCallAssistance}
+                   className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors"
+                 >
+                   Call for assistance
+                 </button>
+              </div>
            </div>
         </div>
 
@@ -182,38 +296,88 @@ export default function ServiceBooking() {
 
            <div className="space-y-4">
               {filteredHistory.map((item, idx) => (
-                 <div key={idx} className="border border-gray-100 rounded-xl p-4 hover:shadow-sm transition-shadow">
+                 <div key={idx} className="border border-gray-100 rounded-xl p-4 hover:shadow-lg hover:border-gray-200 transition-all duration-300 bg-gradient-to-r from-white to-gray-50/50">
                     <div className="flex justify-between items-start">
-                       <div>
-                          <h3 className="font-semibold text-gray-900">{item.serviceName}</h3>
-                          <p className="text-gray-600 text-sm mt-0.5">{item.carName}</p>
-                          <p className="text-gray-400 text-xs mt-1">{item.date}</p>
-                          
+                       <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                             <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                               {getServiceIcon(SERVICE_TYPES.find(s => s.name === item.serviceName)?.icon || 'wrench')}
+                             </div>
+                             <div>
+                                <h3 className="font-semibold text-gray-900">{item.serviceName}</h3>
+                                <p className="text-gray-600 text-sm">{item.carName}</p>
+                             </div>
+                          </div>
+
+                          <div className="flex items-center space-x-4 text-xs text-gray-500 mb-3">
+                             <div className="flex items-center space-x-1">
+                                <Clock size={12} />
+                                <span>{item.date}</span>
+                             </div>
+                             <div className="flex items-center space-x-1">
+                                <span>₹{SERVICE_TYPES.find(s => s.name === item.serviceName)?.basePrice || 'N/A'}</span>
+                             </div>
+                          </div>
+
                           {item.rating > 0 && (
-                            <div className="flex items-center mt-2">
-                               <span className="text-xs text-gray-500 mr-2">Rating:</span>
+                            <div className="flex items-center space-x-2">
+                               <span className="text-xs text-gray-500">Rating:</span>
                                <div className="flex text-yellow-400">
                                   {[...Array(5)].map((_, i) => (
-                                      <Star key={i} size={12} fill={i < item.rating ? "currentColor" : "none"} stroke="currentColor" className={i < item.rating ? "" : "text-gray-300"} />
+                                      <Star key={i} size={14} fill={i < item.rating ? "currentColor" : "none"} stroke="currentColor" className={i < item.rating ? "" : "text-gray-300"} />
                                   ))}
                                </div>
-                               <span className="text-xs text-gray-500 ml-2">"{item.feedback}"</span>
+                               <span className="text-xs text-gray-600 italic">"{item.feedback}"</span>
                             </div>
                           )}
                           {!item.rating && item.status === ServiceStatus.COMPLETED && (
-                             <p className="text-xs text-gray-400 mt-2 italic">No feedback</p>
+                             <div className="flex items-center space-x-2">
+                                <button className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                   Rate this service
+                                </button>
+                                <span className="text-xs text-gray-400">• No feedback yet</span>
+                             </div>
                           )}
                        </div>
-                       
-                       <span className={`px-3 py-1 rounded text-xs font-medium ${getStatusColor(item.status)}`}>
-                          {item.status}
-                       </span>
+
+                       <div className="flex flex-col items-end space-y-2">
+                          <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${getStatusColor(item.status)} shadow-sm`}>
+                             {item.status}
+                          </span>
+                          {item.status === ServiceStatus.IN_PROGRESS && (
+                             <div className="flex items-center space-x-1 text-xs text-blue-600">
+                                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                                <span>In progress</span>
+                             </div>
+                          )}
+                          {item.status === ServiceStatus.PENDING && (
+                             <div className="flex items-center space-x-1 text-xs text-yellow-600">
+                                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                                <span>Waiting</span>
+                             </div>
+                          )}
+                       </div>
                     </div>
+
+                    {/* Progress bar for in-progress services */}
+                    {item.status === ServiceStatus.IN_PROGRESS && (
+                       <div className="mt-4">
+                          <div className="flex justify-between text-xs text-gray-500 mb-1">
+                             <span>Service Progress</span>
+                             <span>75%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                             <div className="bg-blue-500 h-2 rounded-full transition-all duration-1000 ease-out" style={{width: '75%'}}></div>
+                          </div>
+                       </div>
+                    )}
                  </div>
               ))}
               {filteredHistory.length === 0 && (
-                 <div className="text-center text-gray-400 py-8">
-                    No history found for {activeTab.toLowerCase()}.
+                 <div className="text-center text-gray-400 py-12">
+                    <Wrench size={48} className="mx-auto mb-4 opacity-20" />
+                    <p className="font-medium text-lg">No service history</p>
+                    <p className="text-sm">Book your first service to get started</p>
                  </div>
               )}
            </div>

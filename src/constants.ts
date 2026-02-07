@@ -137,10 +137,42 @@ export const MOCK_CARS: Car[] = [
 ];
 
 export const SERVICE_TYPES: ServiceType[] = [
-  { id: 's1', name: 'General service', description: 'Complete vehicle inspection', basePrice: 2000, icon: 'wrench' },
-  { id: 's2', name: 'Oil change', description: 'Engine oil replacement', basePrice: 1500, icon: 'droplet' },
-  { id: 's3', name: 'Wash and polish', description: 'Complete cleaning', basePrice: 800, icon: 'sparkles' },
-  { id: 's4', name: 'Dent and paint', description: 'Body repair works', basePrice: 5000, icon: 'hammer' }
+  {
+    id: 's1',
+    name: 'General service',
+    description: 'Complete vehicle inspection and maintenance',
+    basePrice: 2000,
+    icon: 'wrench',
+    duration: '2 hours',
+    includes: ['Oil level check', 'Tire pressure check', 'Brake inspection', 'Battery check', 'Fluid levels check']
+  },
+  {
+    id: 's2',
+    name: 'Oil change',
+    description: 'Engine oil replacement with filter',
+    basePrice: 1500,
+    icon: 'droplet',
+    duration: '30 minutes',
+    includes: ['Engine oil replacement', 'Oil filter replacement', 'Oil level check']
+  },
+  {
+    id: 's3',
+    name: 'Wash and polish',
+    description: 'Complete exterior cleaning and waxing',
+    basePrice: 800,
+    icon: 'sparkles',
+    duration: '1 hour',
+    includes: ['Exterior wash', 'Wheel cleaning', 'Wax application', 'Interior vacuum', 'Dashboard polish']
+  },
+  {
+    id: 's4',
+    name: 'Dent and paint',
+    description: 'Body repair and paint matching',
+    basePrice: 5000,
+    icon: 'hammer',
+    duration: '4 hours',
+    includes: ['Dent removal', 'Paint matching', 'Sanding and priming', 'Final paint application', 'Clear coat']
+  }
 ];
 
 export const CURRENT_USER: User = {

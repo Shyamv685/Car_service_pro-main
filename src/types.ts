@@ -77,6 +77,8 @@ export interface ServiceType {
   description: string;
   basePrice: number;
   icon: string;
+  duration?: string;
+  includes?: string[];
 }
 
 export interface Booking {
