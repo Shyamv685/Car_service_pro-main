@@ -119,4 +119,21 @@ export interface Driver extends User {
   age?: number;
   quote?: string;
   earnings?: number;
+  experience?: number; // Years of experience
+}
+
+export interface GPSLocation {
+  carId: string;
+  latitude: number;
+  longitude: number;
+  timestamp: string;
+}
+
+export interface NotificationData {
+  id: string;
+  userId: string;
+  type: 'EMAIL' | 'SMS';
+  message: string;
+  sent: boolean;
+  timestamp: string;
 }
