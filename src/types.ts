@@ -96,6 +96,7 @@ export interface Booking {
   notes?: string;
   rating?: number;
   feedback?: string;
+  customCarName?: string; // For custom car names when 'Other' is selected
 }
 
 export interface User {

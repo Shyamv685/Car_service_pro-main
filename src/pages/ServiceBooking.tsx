@@ -11,6 +11,7 @@ export default function ServiceBooking() {
   const { addBooking, currentUser, cars, bookings, addNotification } = useApp();
   const [selectedServiceId, setSelectedServiceId] = useState<string>(SERVICE_TYPES[0].id);
   const [selectedCarId, setSelectedCarId] = useState<string>('');
+  const [customCarName, setCustomCarName] = useState<string>('');
   const [serviceDate, setServiceDate] = useState<Date | null>(null);
   const [activeTab, setActiveTab] = useState<'All' | 'Pending' | 'In progress' | 'Completed'>('All');
   const [showServiceDetails, setShowServiceDetails] = useState<boolean>(false);
@@ -43,6 +44,11 @@ export default function ServiceBooking() {
     }
   }, [cars, selectedCarId]);
 
+  // Reset customCarName when component mounts or cars change
+  useEffect(() => {
+    setCustomCarName('');
+  }, []);
+
   // Mock service history merging with context bookings
   const serviceHistory = [
      // Adding some mock data for display purposes to match screenshot
@@ -71,7 +77,7 @@ export default function ServiceBooking() {
          return {
              id: b.id,
              serviceName: sType?.name || 'Service',
-             carName: c ? `${c.brand} ${c.model}` : 'Tata Nexon',
+             carName: b.customCarName || (c ? `${c.brand} ${c.model}` : 'Tata Nexon'),
              date: b.startDate.split('T')[0],
              status: b.status as ServiceStatus,
              rating: b.rating || 0,
@@ -88,11 +94,18 @@ export default function ServiceBooking() {
     const service = SERVICE_TYPES.find(s => s.id === selectedServiceId);
     if (!service) return;
 
+    // Validate custom car name if 'Other' is selected
+    if (selectedCarId === 'other' && !customCarName.trim()) {
+      addNotification("Please enter a car name for 'Other'.");
+      return;
+    }
+
     const newBooking: Booking = {
       id: Math.random().toString(36).substr(2, 9),
       userId: currentUser.id,
       serviceId: service.id,
-      carId: selectedCarId,
+      carId: selectedCarId === 'other' ? undefined : selectedCarId,
+      customCarName: selectedCarId === 'other' ? customCarName.trim() : undefined,
       type: 'SERVICE',
       startDate: serviceDate ? serviceDate.toISOString() : new Date().toISOString(),
       totalCost: service.basePrice,
@@ -210,15 +223,32 @@ export default function ServiceBooking() {
                  <div className="relative">
                     <select
                         value={selectedCarId}
-                        onChange={(e) => setSelectedCarId(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedCarId(e.target.value);
+                          if (e.target.value !== 'other') {
+                            setCustomCarName('');
+                          }
+                        }}
                         className="w-full appearance-none bg-white border border-gray-200 text-black py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
                     >
                         {cars.map(c => <option key={c.id} value={c.id}>{c.brand} {c.model}</option>)}
+                        <option value="other">Other</option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                     </div>
                  </div>
+                 {selectedCarId === 'other' && (
+                   <div className="mt-2">
+                     <input
+                       type="text"
+                       value={customCarName}
+                       onChange={(e) => setCustomCarName(e.target.value)}
+                       placeholder="Enter your car name"
+                       className="w-full border border-gray-200 rounded-lg py-2 px-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                     />
+                   </div>
+                 )}
               </div>
            </div>
 

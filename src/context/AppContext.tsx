@@ -364,7 +364,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           total_cost: booking.totalCost,
           status: booking.status,
           location: booking.location,
-          notes: booking.notes
+          notes: booking.notes,
+          custom_car_name: booking.customCarName
         };
         await supabase.from('bookings').insert(dbBooking);
       } catch (error) { console.warn("Booking DB insert failed", error); }
