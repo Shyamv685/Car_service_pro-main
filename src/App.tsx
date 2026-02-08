@@ -583,7 +583,7 @@ const Layout = ({ children }: { children?: React.ReactNode }) => {
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 border-t border-gray-200 bg-white flex flex-col sm:flex-row justify-between text-xs text-gray-500">
+      <div className={`fixed bottom-0 ${isCollapsed ? 'md:left-20' : 'md:left-64'} left-0 right-0 px-6 py-3 border-t border-gray-200 bg-white flex flex-col sm:flex-row justify-between text-xs text-gray-500 z-10`}>
          <p>&copy; 2025 Car Service Pro. All rights reserved.</p>
          <div className="space-x-4 mt-2 sm:mt-0">
            <a href="#" className="hover:text-gray-900">Privacy</a>
@@ -668,7 +668,7 @@ const MainWrapper = () => {
 export default function App() {
   return (
     <AppProvider>
-      <HashRouter>
+      <HashRouter future={{ v7_startTransition: true }}>
          <MainWrapper />
       </HashRouter>
     </AppProvider>
